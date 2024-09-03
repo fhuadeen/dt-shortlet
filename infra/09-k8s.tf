@@ -1,6 +1,6 @@
 resource "kubernetes_namespace" "namespace" {
   metadata {
-    name = "shortlet-namespace"
+    name = var.k8s_namespace
   }
 }
 
@@ -9,15 +9,11 @@ resource "kubernetes_config_map" "shortlet_api_config" {
     name      = "shortlet-api-config"
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
-
-  # data = {
-  #   api-key = var.k8s_api_key
-  # }
 }
 
 resource "kubernetes_deployment" "shortlet_api_deployment" {
   metadata {
-    name      = "shortlet-api-deployment"
+    name      = var.k8s_shortlet_deployment_name
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
 
@@ -73,7 +69,7 @@ resource "kubernetes_service" "shortlet_api_service" {
 
 resource "kubernetes_ingress" "shortlet_api_ingress" {
   metadata {
-    name      = "shortlet-api-ingress"
+    name      = var.k8s_ingress_name
     namespace = kubernetes_namespace.namespace.metadata[0].name
   }
 

@@ -1,0 +1,22 @@
+gcp_project_id   = ""
+gcp_region       = "us-central1"
+gcp_zone         = "us-central1-a"
+k8s_cluster_name = ""
+init_node_count  = 1
+gcp_sa_key = {
+  "type" : "service_account",
+  "project_id" : "",
+  "private_key_id" : "",
+  "private_key" : "",
+  "client_email" : "",
+  "client_id" : "",
+  "auth_uri" : "",
+  "token_uri" : "",
+  "auth_provider_x509_cert_url" : "",
+  "client_x509_cert_url" : "",
+  "universe_domain" : ""
+}
+shortlet_deploy_replica_count = 1
+k8s_namespace = ""
+k8s_shortlet_deployment_name = ""
+k8s_ingress_name = ""

@@ -1,0 +1,29 @@
+name: terraform
+
+on:
+  # Triggers the workflow on review on PR events
+  push:
+    branches:
+      - main
+    # only respond to changes in infra folder
+    paths:
+      - 'infra/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Create Service account JSON file
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" > shortlet-sa.json
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve

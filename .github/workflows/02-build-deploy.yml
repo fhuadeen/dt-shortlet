@@ -1,0 +1,52 @@
+name: build-deploy
+
+on:
+  # Triggers the workflow on review on PR events
+  push:
+    branches:
+      - main
+    # only respond to changes in api folder
+    paths:
+      - 'api/**'
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Authenticate to Google Cloud
+        run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker to use the gcloud command-line tool as a credential helper
+        run: gcloud auth configure-docker
+
+      - name: Build Docker image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/shortlet-app:$GITHUB_SHA .
+          
+      - name: Push Docker image to GCR
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/shortlet-app:$GITHUB_SHA
+  
+  deploy_to_cluster:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Kubernetes CLI
+      uses: azure/setup-kubectl@v3
+
+    - name: Get GKE Cluster Credentials
+      run: |
+        gcloud container clusters get-credentials ${{ secrets.GCP_GKE_CLUSTER_NAME }} --region ${{ secrets.GCP_REGION }} --project ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: Update K8s Deployment
+      run: |
+        kubectl rollout restart deployment shortlet-api-deployment --namespace=shortlet-namespace
