@@ -32,14 +32,14 @@ jobs:
           echo '{
             "type": "${{ secrets.SA_TYPE }}",
             "project_id": "${{ secrets.GCP_PROJECT_ID }}",
-            "private_key_id": "${{ secrets.SA_PRIVATE_KEY_ID }}"
-            "private_key": "${{ secrets.SA_PRIVATE_KEY }}"
-            "client_email": "${{ secrets.SA_CLIENT_EMAIL }}"
-            "client_id": "${{ secrets.SA_CLIENT_ID }}"
-            "auth_uri": "${{ secrets.SA_AUTH_URI }}"
-            "token_uri": "${{ secrets.SA_TOKEN_URI }}"
-            "auth_provider_x509_cert_url": "${{ secrets.SA_AUTH_PROVIDER_URL }}"
-            "client_x509_cert_url": "${{ secrets.SA_CLIENT_URL }}"
+            "private_key_id": "${{ secrets.SA_PRIVATE_KEY_ID }}",
+            "private_key": "${{ secrets.SA_PRIVATE_KEY }}",
+            "client_email": "${{ secrets.SA_CLIENT_EMAIL }}",
+            "client_id": "${{ secrets.SA_CLIENT_ID }}",
+            "auth_uri": "${{ secrets.SA_AUTH_URI }}",
+            "token_uri": "${{ secrets.SA_TOKEN_URI }}",
+            "auth_provider_x509_cert_url": "${{ secrets.SA_AUTH_PROVIDER_URL }}",
+            "client_x509_cert_url": "${{ secrets.SA_CLIENT_URL }}",
             "universe_domain": "${{ secrets.SA_UNIVERSE_DOMAIN }}"
           }' > shortlet-sa.json
 
