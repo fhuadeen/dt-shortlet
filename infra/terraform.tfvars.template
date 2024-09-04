@@ -1,0 +1,11 @@
+gcp_project_id   = ""
+gcp_region       = "us-central1"
+gcp_zone         = "us-central1-a"
+k8s_cluster_name = ""
+service_account_token = ""
+init_node_count  = 1
+shortlet_deploy_replica_count = 1
+k8s_namespace = ""
+k8s_shortlet_deployment_name = ""
+k8s_ingress_name = ""
+k8s_node_label = ""
