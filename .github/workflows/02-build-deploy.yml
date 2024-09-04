@@ -26,6 +26,7 @@ jobs:
 
       - name: Create Service account JSON file for backend and provider use
         run: |
+          pwd
           echo "${{ secrets.GCP_SA_KEY }}" > shortlet-sa.json
 
       - name: Authenticate to Google Cloud
