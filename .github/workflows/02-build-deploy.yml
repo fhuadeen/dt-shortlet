@@ -43,11 +43,11 @@ jobs:
             "universe_domain": "${{ secrets.SA_UNIVERSE_DOMAIN }}"
           }' > shortlet-sa.json
 
-      - name: See content of current path
-        run: |
-          ls -la
-          pwd
-          cd api && ls -la
+      # - name: See content of current path
+      #   run: |
+      #     ls -la
+      #     pwd
+      #     cd api && ls -la
 
       # - name: Create Service account JSON file for backend and provider use
       #   run: |
@@ -88,11 +88,11 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v3
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+      # - name: Set up Google Cloud SDK
+      #   uses: google-github-actions/setup-gcloud@v1
+      #   with:
+      #     project_id: ${{ secrets.GCP_PROJECT_ID }}
+      #     service_account_key: ${{ secrets.GCP_SA_KEY }}
 
       - name: Login to Docker
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
@@ -128,6 +128,31 @@ jobs:
     steps:
     - name: Set up Kubernetes CLI
       uses: azure/setup-kubectl@v3
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Create SA JSON file from secrets
+      run: |
+        echo '{
+          "type": "${{ secrets.SA_TYPE }}",
+          "project_id": "${{ secrets.GCP_PROJECT_ID }}",
+          "private_key_id": "${{ secrets.SA_PRIVATE_KEY_ID }}",
+          "private_key": "${{ secrets.SA_PRIVATE_KEY }}",
+          "client_email": "${{ secrets.SA_CLIENT_EMAIL }}",
+          "client_id": "${{ secrets.SA_CLIENT_ID }}",
+          "auth_uri": "${{ secrets.SA_AUTH_URI }}",
+          "token_uri": "${{ secrets.SA_TOKEN_URI }}",
+          "auth_provider_x509_cert_url": "${{ secrets.SA_AUTH_PROVIDER_URL }}",
+          "client_x509_cert_url": "${{ secrets.SA_CLIENT_URL }}",
+          "universe_domain": "${{ secrets.SA_UNIVERSE_DOMAIN }}"
+        }' > shortlet-sa.json
+
+    - name: Authenticate to Google Cloud
+      run: gcloud auth activate-service-account --key-file=./shortlet-sa.json
 
     - name: Get GKE Cluster Credentials
       run: |
