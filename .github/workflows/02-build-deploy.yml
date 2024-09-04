@@ -36,6 +36,7 @@ jobs:
         run: |
           ls -la
           pwd
+          cd api && ls -la
 
       - name: Create Service account JSON file for backend and provider use
         run: |
