@@ -33,7 +33,7 @@ jobs:
       #     gsutil cp gs://shoplet-tf-state/shortlet-sa.json ./shortlet-sa.json
 
       - name: See content of current path
-        run: ls -a
+        run: ls -la
 
       - name: Create Service account JSON file for backend and provider use
         run: |
