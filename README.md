@@ -30,7 +30,7 @@ Navigate to `api` directory and run below commands:
     ```
 
 Infrastructure Architecture:
-[image]
+![Alt text](extras/shortlet-app.architecture.png)
 
 ## Terraform
 Setting up project with Terraform
@@ -52,7 +52,7 @@ Setting up project with Terraform
 - Run `terraform init` # initialize the project
 - Run `terraform fmt` # format your terraform code
 - Run `terraform plan` # a dry run to see the expected output of your code
-- Run `terraform apply -auto-approve` # apply the instructions to create the resources
+- Run `terraform apply --auto-approve` # apply the instructions to create the resources
 - To destroy all resources created via Terraform, run `terraform destroy`.
 
 2. If to use currently provisioned infrastructure with created backend Persistence
