@@ -24,15 +24,15 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Authenticate to Google Cloud
-        run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
-      
-      - name: Get Service account token
-        run: echo "service_account_token = \"$(gcloud auth print-access-token)\"" > infra/terraform.tfvars
-
       - name: Create Service account JSON file for backend and provider use
         run: |
           echo "${{ secrets.GCP_SA_KEY }}" > shortlet-sa.json
+
+      - name: Authenticate to Google Cloud
+        run: gcloud auth activate-service-account --key-file=shortlet-sa.json
+      
+      - name: Get Service account token
+        run: echo "service_account_token = \"$(gcloud auth print-access-token)\"" > infra/terraform.tfvars
 
       - name: Generate terraform.tfvars
         run: |
