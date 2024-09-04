@@ -154,6 +154,9 @@ jobs:
     - name: Authenticate to Google Cloud
       run: gcloud auth activate-service-account --key-file=./shortlet-sa.json
 
+    - name: Install gke-gcloud-auth-plugin for autheticating kubectl
+      run: gcloud components install gke-gcloud-auth-plugin
+
     - name: Get GKE Cluster Credentials
       run: |
         gcloud container clusters get-credentials ${{ secrets.GCP_GKE_CLUSTER_NAME }} --zone ${{ secrets.TF_VAR_GCP_ZONE }} --project ${{ secrets.GCP_PROJECT_ID }}
