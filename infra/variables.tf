@@ -23,23 +23,6 @@ variable "init_node_count" {
   type        = number
 }
 
-variable "gcp_sa_key" {
-  description = "GCP service account key"
-  type = object({
-    type                        = string
-    project_id                  = string
-    private_key_id              = string
-    private_key                 = string
-    client_email                = string
-    client_id                   = string
-    auth_uri                    = string
-    token_uri                   = string
-    auth_provider_x509_cert_url = string
-    client_x509_cert_url        = string
-    universe_domain             = string
-  })
-}
-
 variable "shortlet_deploy_replica_count" {
   description = "Number of replicas for shortlet app deployment"
   type        = number
@@ -63,4 +46,9 @@ variable "k8s_shortlet_deployment_name" {
 variable "k8s_ingress_name" {
   description = "Kubernetes Ingress name"
   type        = string
+}
+
+variable "k8s_node_label" {
+  description = "Kubernetes node label"
+  type = string
 }

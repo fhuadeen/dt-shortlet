@@ -19,7 +19,7 @@ resource "google_container_node_pool" "shoplet_node" {
     machine_type = "e2-small"
 
     labels = {
-      role = "shoplet-apps"
+      role = var.k8s_node_label
     }
 
     service_account = google_service_account.gke_sa.email
