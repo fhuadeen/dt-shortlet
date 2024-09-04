@@ -5,6 +5,30 @@
 - Docker
 - Terraform
 
+
+## Docker
+Navigate to `api` directory and run below commands:
+- Build:
+    ```bash
+    docker build -t gcr.io/<google_cloud_project_id>/shortlet-app:latest .
+    ```
+
+- Run:
+    ```bash
+    docker run -p 8000:8000 --name shortlet-api shortlet-api:latest
+    ```
+
+- Push:
+    - Docker use Gcloud for credentials
+    ```bash
+    gcloud auth configure-docker
+    ```
+
+    - Push to GCP artifacts registry
+    ```bash
+    docker push gcr.io/<google_cloud_project_id>/shortlet-app:latest
+    ```
+
 Infrastructure Architecture:
 [image]
 
