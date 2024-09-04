@@ -27,13 +27,21 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
 
-      # - name: Install gsutil
-      #   run: |
-      #     gcloud components install gsutil
-
-      # - name: Download file from GCS
-      #   run: |
-      #     gsutil cp gs://shoplet-tf-state/shortlet-sa.json ./shortlet-sa.json
+      - name: Create SA JSON file from secrets
+        run: |
+          echo '{
+            "type": "${{ secrets.SA_TYPE }}",
+            "project_id": "${{ secrets.GCP_PROJECT_ID }}",
+            "private_key_id": "${{ secrets.SA_PRIVATE_KEY_ID }}"
+            "private_key": "${{ secrets.SA_PRIVATE_KEY }}"
+            "client_email": "${{ secrets.SA_CLIENT_EMAIL }}"
+            "client_id": "${{ secrets.SA_CLIENT_ID }}"
+            "auth_uri": "${{ secrets.SA_AUTH_URI }}"
+            "token_uri": "${{ secrets.SA_TOKEN_URI }}"
+            "auth_provider_x509_cert_url": "${{ secrets.SA_AUTH_PROVIDER_URL }}"
+            "client_x509_cert_url": "${{ secrets.SA_CLIENT_URL }}"
+            "universe_domain": "${{ secrets.SA_UNIVERSE_DOMAIN }}"
+          }' > shortlet-sa.json
 
       - name: See content of current path
         run: |
@@ -46,8 +54,8 @@ jobs:
       #     echo "${{ secrets.GCP_SA_KEY }}" > shortlet-sa.json
       #     ls -la
 
-      # - name: Authenticate to Google Cloud
-      #   run: gcloud auth activate-service-account --key-file=./shortlet-sa.json
+      - name: Authenticate to Google Cloud
+        run: gcloud auth activate-service-account --key-file=./shortlet-sa.json
 
       # - name: Authenticate to Google Cloud
       #   run: echo "${{ secrets.GCP_SA_KEY }}" | gcloud auth activate-service-account --key-file=-
