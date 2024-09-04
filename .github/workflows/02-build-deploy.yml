@@ -69,10 +69,10 @@ jobs:
           echo "k8s_node_label = \"${{ secrets.TF_VAR_k8s_node_label }}\"" >> infra/terraform.tfvars
 
       - name: Terraform Init
-        run: terraform init
+        run: cd infra && terraform init
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: cd infra && terraform apply --auto-approve
   build_and_push:
     needs: terraform
     runs-on: ubuntu-latest
