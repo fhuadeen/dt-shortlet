@@ -21,7 +21,7 @@ def get_current_datetime(timezone: str = "UTC"):
 
 
 # current_datetime/
-@app.get("/show/current_datetime/")
+@app.get("/")
 def show_current_datetime():
 
     current_time: datetime = get_current_datetime()
