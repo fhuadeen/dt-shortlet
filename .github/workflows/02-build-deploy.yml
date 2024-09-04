@@ -41,13 +41,16 @@ jobs:
           pwd
           cd api && ls -la
 
-      - name: Create Service account JSON file for backend and provider use
-        run: |
-          echo "${{ secrets.GCP_SA_KEY }}" > shortlet-sa.json
-          ls -la
+      # - name: Create Service account JSON file for backend and provider use
+      #   run: |
+      #     echo "${{ secrets.GCP_SA_KEY }}" > shortlet-sa.json
+      #     ls -la
+
+      # - name: Authenticate to Google Cloud
+      #   run: gcloud auth activate-service-account --key-file=./shortlet-sa.json
 
       - name: Authenticate to Google Cloud
-        run: gcloud auth activate-service-account --key-file=./shortlet-sa.json
+        run: echo "${{ secrets.GCP_SA_KEY }}" | gcloud auth activate-service-account --key-file=-
       
       - name: Get Service account token
         run: echo "service_account_token = \"$(gcloud auth print-access-token)\"" > infra/terraform.tfvars
