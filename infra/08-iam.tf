@@ -2,6 +2,10 @@ resource "google_project_service" "iam_api" {
   service                    = "iam.googleapis.com"
   disable_on_destroy         = false
   disable_dependent_services = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_project_iam_member" "gke_admin" {

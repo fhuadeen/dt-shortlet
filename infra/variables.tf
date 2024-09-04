@@ -45,10 +45,10 @@ variable "shortlet_deploy_replica_count" {
   type        = number
 }
 
-# variable "service_account_token" {
-#   description = "Service account access token"
-#   type        = string
-# }
+variable "service_account_token" {
+  description = "Service account access token"
+  type        = string
+}
 
 variable "k8s_namespace" {
   description = "Kubernetes Namespace"

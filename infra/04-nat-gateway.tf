@@ -1,9 +1,9 @@
 resource "google_compute_router_nat" "nat_gw" {
   name                               = "shortlet-nat"
-  router                             = google_compute_router.nat_router.id
+  router                             = google_compute_router.nat_router.name
   region                             = var.gcp_region
-  nat_ip_allocate_option             = "AUTO_ONLY"
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+  nat_ip_allocate_option             = "MANUAL_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
 
   subnetwork {
     name                    = google_compute_subnetwork.subnetwork_private.id
@@ -11,6 +11,8 @@ resource "google_compute_router_nat" "nat_gw" {
   }
 
   nat_ips = [google_compute_address.nat.self_link]
+
+  depends_on = [google_compute_router.nat_router]
 }
 
 resource "google_compute_address" "nat" {

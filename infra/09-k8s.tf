@@ -39,7 +39,7 @@ resource "kubernetes_deployment" "shortlet_api_deployment" {
           name  = "shortlet-api"
 
           port {
-            container_port = 8080
+            container_port = 8000
           }
         }
       }
@@ -59,8 +59,8 @@ resource "kubernetes_service" "shortlet_api_service" {
     }
 
     port {
-      port        = 80
-      target_port = 8080
+      port        = 8000
+      target_port = 8000
     }
 
     type = "LoadBalancer"
@@ -76,7 +76,7 @@ resource "kubernetes_ingress" "shortlet_api_ingress" {
   spec {
     backend {
       service_name = kubernetes_service.shortlet_api_service.metadata[0].name
-      service_port = 80
+      service_port = 8000
     }
   }
 }

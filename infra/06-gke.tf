@@ -9,13 +9,13 @@ resource "google_container_cluster" "primary" {
   monitoring_service       = "monitoring.googleapis.com/kubernetes"
   networking_mode          = "VPC_NATIVE"
 
-  # master_auth {
-  #   # username = ""
-  #   # password = ""
-  #   client_certificate_config {
-  #     issue_client_certificate = false
-  #   }
-  # }
+  master_auth {
+    # username = ""
+    # password = ""
+    client_certificate_config {
+      issue_client_certificate = false
+    }
+  }
 
   # for multi-zonal cluster
   node_locations = [

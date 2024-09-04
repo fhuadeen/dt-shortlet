@@ -1,8 +1,11 @@
-
 resource "google_project_service" "compute_api" {
   service                    = "compute.googleapis.com"
   disable_on_destroy         = false
   disable_dependent_services = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_project_service" "container_api" {
@@ -10,7 +13,9 @@ resource "google_project_service" "container_api" {
   disable_on_destroy         = false
   disable_dependent_services = true
 
-  depends_on = [ google_project_service.compute_api ]
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_compute_network" "vpc_network" {

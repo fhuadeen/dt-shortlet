@@ -2,6 +2,7 @@ gcp_project_id   = ""
 gcp_region       = "us-central1"
 gcp_zone         = "us-central1-a"
 k8s_cluster_name = ""
+service_account_token = ""
 init_node_count  = 1
 gcp_sa_key = {
   "type" : "service_account",
