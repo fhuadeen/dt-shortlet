@@ -1,16 +1,59 @@
-name: build-deploy
+name: terraform-build-deploy
 
 on:
   # Triggers the workflow on review on PR events
   push:
     branches:
       - main
-    # only respond to changes in api folder
-    paths:
-      - 'api/**'
+    # # only respond to changes in api folder
+    # paths:
+    #   - 'api/**'
 
 jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Authenticate to Google Cloud
+        run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
+      
+      - name: Get Service account token
+        run: echo "service_account_token = \"$(gcloud auth print-access-token)\"" > infra/terraform.tfvars
+
+      - name: Create Service account JSON file for backend and provider use
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" > shortlet-sa.json
+
+      - name: Generate terraform.tfvars
+        run: |
+          echo "gcp_project_id = \"${{ secrets.GCP_PROJECT_ID }}\"" >> infra/terraform.tfvars
+          echo "gcp_region = \"${{ secrets.GCP_REGION }}\"" >> infra/terraform.tfvars
+          echo "gcp_zone = \"${{ secrets.TF_VAR_gcp_zone }}\"" >> infra/terraform.tfvars
+          echo "k8s_cluster_name = \"${{ secrets.GCP_GKE_CLUSTER_NAME }}\"" >> infra/terraform.tfvars
+          echo "init_node_count = \"${{ secrets.TF_VAR_init_node_count }}\"" >> infra/terraform.tfvars
+          echo "shortlet_deploy_replica_count = \"${{ secrets.TF_VAR_shortlet_deploy_replica_count }}\"" >> infra/terraform.tfvars
+          echo "k8s_namespace = \"${{ secrets.TF_VAR_k8s_namespace }}\"" >> infra/terraform.tfvars
+          echo "k8s_shortlet_deployment_name = \"${{ secrets.TF_VAR_k8s_shortlet_deployment_name }}\"" >> infra/terraform.tfvars
+          echo "k8s_ingress_name = \"${{ secrets.TF_VAR_k8s_ingress_name }}\"" >> infra/terraform.tfvars
+          echo "k8s_node_label = \"${{ secrets.TF_VAR_k8s_node_label }}\"" >> infra/terraform.tfvars
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
   build_and_push:
+    needs: terraform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -22,19 +65,33 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Authenticate to Google Cloud
-        run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
-
-      - name: Configure Docker to use the gcloud command-line tool as a credential helper
-        run: gcloud auth configure-docker
+      - name: Login to Docker
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
         run: |
-          cd api && docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/shortlet-app:$GITHUB_SHA .
-          
-      - name: Push Docker image to GCR
+          cd api && docker build -t fhuadeen/shortlet-app:$GITHUB_SHA .
+
+      - name: Push Docker image to Docker hub
         run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/shortlet-app:$GITHUB_SHA
+          docker push fhuadeen/shortlet-app:$GITHUB_SHA
+
+      # - name: Authenticate to Google Cloud
+      #   run: gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
+
+      # - name: Configure Docker to use the gcloud command-line tool as a credential helper
+      #   run: gcloud auth configure-docker
+
+      # - name: Build Docker image
+      #   run: |
+      #     cd api && docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/shortlet-app:$GITHUB_SHA .
+          
+      # - name: Push Docker image to GCR
+      #   run: |
+      #     docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/shortlet-app:$GITHUB_SHA
   
   deploy_to_cluster:
     needs: build_and_push
