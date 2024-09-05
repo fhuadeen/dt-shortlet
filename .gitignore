@@ -3,6 +3,7 @@
 
 # others
 shortlet-sa.json
+*.log
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
